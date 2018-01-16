@@ -545,33 +545,33 @@ __global__ void gpu_Filter_peaks_kernel(float4 *d_new_peak_list, float4 *d_peak_
 	
 	for(int f=0; f<nLoops; f++){
 		// Load new data blob
-		s_data[threadIdx.x + 2*PPF_DPB] = 0; // SNR
-		s_data[threadIdx.x + 64 + 2*PPF_DPB] = 0; // SNR
+		//s_data[threadIdx.x + 2*PPF_DPB] = 0; // SNR
+		//s_data[threadIdx.x + 64 + 2*PPF_DPB] = 0; // SNR
 		
 		pos = PPF_DPB*f + threadIdx.x;
-		if(pos<nElements){
+		//if(pos<nElements){
 			f4temp = __ldg(&d_peak_list[pos]);
 			s_data[threadIdx.x            ] = f4temp.x; // DM
 			s_data[threadIdx.x +   PPF_DPB] = f4temp.y; // Time
 			s_data[threadIdx.x + 2*PPF_DPB] = f4temp.z; // SNR
-			//s_data[threadIdx.x + 384] = d_peak_list[128*f].w; // taps
-		}
+		//}
+		//if(blockIdx.x==0 && threadIdx.x==0) printf("point: [%f;%f;%f;%f] - ",  f4temp.x, f4temp.y, f4temp.z, f4temp.w);
+		
 		
 		pos = PPF_DPB*f + threadIdx.x + (PPF_DPB>>1);
-		if(pos<nElements){
+		//if(pos<nElements){
 			f4temp = __ldg(&d_peak_list[PPF_DPB*f + threadIdx.x + (PPF_DPB>>1)]);
 			s_data[threadIdx.x + 64            ] = f4temp.x; // DM
 			s_data[threadIdx.x + 64 +   PPF_DPB] = f4temp.y; // Time
 			s_data[threadIdx.x + 64 + 2*PPF_DPB] = f4temp.z; // SNR
-			//s_data[threadIdx.x + 448] = d_peak_list[128*f].w; // taps
-		}
+		//}
 		
 		__syncthreads();
 		
 		for(int p=0; p<PPF_PEAKS_PER_BLOCK; p++){
 			if(s_flag[p]){
-				pos = elements_pos+p;
-				if(pos<nElements){
+				//pos = elements_pos+p;
+				//if(pos<nElements){
 					d   = d_peak_list[elements_pos+p].x;
 					s   = d_peak_list[elements_pos+p].y;
 					snr = d_peak_list[elements_pos+p].z;
@@ -582,6 +582,7 @@ __global__ void gpu_Filter_peaks_kernel(float4 *d_new_peak_list, float4 *d_peak_
 						fd = (s_data[threadIdx.x + PPF_DPB] - s);
 						distance = fd*fd + fs*fs;
 						if(distance<max_distance){
+							//if(blockIdx.x==0) printf("distance: %f; - 
 							s_flag[p]=0;
 						}
 					}
@@ -595,30 +596,10 @@ __global__ void gpu_Filter_peaks_kernel(float4 *d_new_peak_list, float4 *d_peak_
 							s_flag[p]=0;
 						}
 					}
-				}
-				else {
-					s_flag[p]=0;
-				}
+				//}
 			}
 		} // for p
 		
-		//itemp=0;
-		//if(threadIdx.x<32) {
-		//	itemp = s_flag[threadIdx.x] + s_flag[threadIdx.x + 32];
-		//	for (int q = 16; q > 0; q = q >> 1) {
-		//			itemp = itemp + __shfl_down(itemp, q);
-		//		}
-		//	}
-		//	if(threadIdx.x==0 && itemp==0) s_flag[0]=-1;
-		//}
-		//__syncthreads();
-		//if(s_flag[0]<0) f=nLoops;
-		
-		
-	}
-	
-	if( (nElements&127)>0 ){ //trailing part
-		//later
 	}
 	
 	// Saving peaks that got through
