@@ -51,3 +51,20 @@ void Peak_find_for_periodicity_search(float *d_input_SNR, ushort *d_input_harmon
 	
 	dilate_peak_find_for_periods<<<gridSize, blockDim>>>(d_input_SNR, d_input_harmonics, d_peak_list, nTimesamples, nDMs, 0, threshold, max_peak_size, gmem_peak_pos, d_MSD, DM_shift, inBin);
 }
+
+void gpu_Filter_peaks(float *d_new_peak_list, float *d_old_peak_list, int nElements, float max_distance, int max_list_pos, int *gmem_peak_pos){
+	int nThreads, nBlocks_x, nLoops;
+	
+	nThreads=64;
+	//itemp = nElements/PPF_PEAKS_PER_BLOCK;
+	nBlocks_x = nElements/PPF_PEAKS_PER_BLOCK;
+	if(nElements%PPF_PEAKS_PER_BLOCK!=0) nBlocks_x++;
+	nLoops = nElements/PPF_DPB;
+	if(nElements%PPF_DPB!=0) nLoops++;
+	//if(itemp>0) nBlocks_x++;
+	
+	dim3 blockDim(nThreads, 1, 1);
+	dim3 gridSize(nBlocks_x, 1, 1);	
+	
+	gpu_Filter_peaks_kernel<<<gridSize, blockDim>>>( (float4 *) d_new_peak_list, (float4 *) d_old_peak_list, nElements, max_distance*max_distance, nLoops, max_list_pos, gmem_peak_pos);
+}

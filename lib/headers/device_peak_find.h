@@ -13,5 +13,6 @@ extern void Peak_find_for_periodicity_search_old(float *d_input_SNR, ushort *d_i
 
 extern void Peak_find_for_periodicity_search(float *d_input_SNR, ushort *d_input_harmonics, float *d_peak_list, int nDMs, int nTimesamples, float threshold, int max_peak_size, int *gmem_peak_pos, float const* __restrict__ d_MSD, int DM_shift, int inBin);
 
+extern void gpu_Filter_peaks(float *d_new_peak_list, float *d_old_peak_list, int nElements, float max_distance, int max_list_pos, int *gmem_peak_pos);
 
 #endif

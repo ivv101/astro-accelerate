@@ -75,3 +75,7 @@
 
 #define PPF_L1_THREADS_PER_BLOCK 256
 #define PPF_L1_SPECTRA_PER_BLOCK 5
+
+//Experimental peak finding
+#define PPF_PEAKS_PER_BLOCK 10
+#define PPF_DPB 128
