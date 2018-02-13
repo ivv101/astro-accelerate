@@ -22,10 +22,10 @@ analysis
 -rfi
 threshold
 baselinenoise
-fdas_custom_fft
+-fdas_custom_fft
 -fdas_inbin
 -fdas_norm
 debug
 -analysis_debug
 -failsafe
-file /data/oerc-astro-accelerate/kadamek/ska-mid-b2.fil
+file /data/oerc-astro-accelerate/kadamek/aa_test_file_dm50_p100ms_snr3.fil

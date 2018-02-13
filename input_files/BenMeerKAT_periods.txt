@@ -25,4 +25,4 @@ fdas_custom_fft
 debug
 -analysis_debug
 -failsafe
-file ~/filterbank/BenMeerKAT_periods.fil
+file /data/oerc-astro-accelerate/kadamek/BenMeerKAT_periods.fil

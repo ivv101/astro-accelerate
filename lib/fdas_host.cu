@@ -199,6 +199,7 @@ void fdas_create_acc_kernels(cufftComplex* d_kernel, cmd_args *cmdargs )
     double z = (-ZMAX+ii*ACCEL_STEP);
     int halfwidth = presto_z_resp_halfwidth(z, LOWACC) ;
     int numkern = 2 * halfwidth * inbin;
+	printf("full width: %d\n", 2*halfwidth);
     tempkern = presto_gen_z_response( z, numkern, inbin);
     presto_place_complex_kernel(tempkern, numkern, (h_kernel+ii*KERNLEN), KERNLEN);
     free(tempkern);
